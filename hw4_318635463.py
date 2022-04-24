@@ -33,10 +33,11 @@ def winnable_mem(board):
     return winnable_mem_rec(board, d)
 
 def winnable_mem_rec(board, d):
+
     if sum(board)==0:
         d[tuple(board)] = True
         return True
-    
+
     if tuple(board) in d:
         return d[tuple(board)]
 
@@ -49,7 +50,6 @@ def winnable_mem_rec(board, d):
                 d[tuple(board)] = True
                 return True
             
-    
     d[tuple(board)] = False
     return False
 
@@ -58,16 +58,24 @@ def winnable_mem_rec(board, d):
 ##############
 # 2a
 def legal_path(A, vertices):
-    pass  # replace this with your code
-
+    for i in range (len(vertices)-1):
+        if A[vertices[i]][vertices[i+1]] != 1:
+            return False
+        
+    return True
+        
 
 # 2c
 def path_v2(A, s, t, k):
     if k == 0:
         return s == t
-
-    # ADD YOUR CODE HERE #
-
+    
+    if k == 1 :
+        if A[s][t] == 1:
+            return True
+        else:
+            return False
+            
     for i in range(len(A)):
         mid = k // 2
         if path_v2(A, s, i, mid) and path_v2(A, i, t, k - mid):
