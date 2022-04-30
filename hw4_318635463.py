@@ -88,7 +88,7 @@ def path_v3(A, s, t):
     if s == t:
         return True
 
-    for i in range(len(A)):
+    for i in range(s,len(A)):
         if A[s][i] == 1:
             if path_v3(A, i, t):
                 return True
@@ -96,9 +96,9 @@ def path_v3(A, s, t):
 
 
 path_v3_a = None  # Replace with an example of an input if the claim is true
-path_v3_b = None  # Replace with an example of an input if the claim is true
+path_v3_b = ([[0,1,1],[1,0,0],[0,1,0]],0,2)
 path_v3_c = None  # Replace with an example of an input if the claim is true
-path_v3_d = None  # Replace with an example of an input if the claim is true
+path_v3_d = ([[0,1,1,0,0],[1,0,1,0,0],[0,0,0,1,0],[1,0,0,0,0],[0,0,0,0,0]],0,4)
 
 
 ##############
@@ -117,7 +117,8 @@ def can_create_once(s, L):
     if res1 or res2 == True:
         result = True
     
-    return result         
+    return result
+
         
 
 # 3b   
@@ -141,7 +142,10 @@ def can_create_twice(s, L):
 
 # 3c
 def valid_braces_placement(s, L):
-    pass
+    last,L = ('',[str(i) for i in L]) if isinstance(L[0],int) else (L[0],L[1:])
+    return bool(sum([valid_braces_placement(s,[f"{last}{'(' + ''.join(L[:i+1])+')'}{''.join(L[i+1:min(j+2,L.index('*'))])}({''.join(L[j+2:L.index('*')])})".removesuffix('()')+'*']+L[L.index('*')+1:]) for i in range(0,L.index('*'),2) for j in range(i,L.index('*'),2)])) if '*' in L else s in [eval(last+'(' + ''.join(L[:i+1])+')'+''.join(L[i+1:])) for i in range(0,len(L),2)]
+
+    
     
 
 ##############
@@ -149,13 +153,61 @@ def valid_braces_placement(s, L):
 ##############
 # 4a
 def grid_escape1(B):
-    pass  # replace this with your code
+    global n
+    n = len(B)
+    left = 0
+    right = 0
 
+    return grid_escape1_rec(B, left, right)
+
+def grid_escape1_rec(B, left, right):
+    global n
+    
+    if left == n-1 and right == n-1 :
+        return True
+    if left > n-1 or right > n-1:
+        return False
+
+    num = B[left][right]
+    
+    res1 = grid_escape1_rec(B,left + num, right)
+    res2 = grid_escape1_rec(B,left, right + num)
+
+    return res1 or res2
+ 
 
 # 4b
 def grid_escape2(B):
-    pass  # replace this with your code
+    global n
+    n = len(B)
+    left = 0
+    right = 0
+    mem = {}
 
+    return grid_escape2_rec(B, left, right, mem)
+
+def grid_escape2_rec(B, left, right, mem):
+    global n
+
+    if (left,right) in mem:
+        return mem[(left,right)]
+    if left == n-1 and right == n-1:
+        return True
+    if left > n-1 or right > n-1 or left < 0 or right < 0:
+        return False
+    
+    res1 = grid_escape2_rec(B,left, right + B[left][right], mem)
+    res2 = grid_escape2_rec(B,left + B[left][right], right, mem)
+    
+    mem[(left,right)] = res1 or res2
+    
+    if res1 == False and res2 == False:
+        res3 = grid_escape2_rec(B,left, right - B[left][right], mem)
+        res4 = grid_escape2_rec(B,left - B[left][right], right, mem)
+        mem[(left,right)] = res3 or res4
+        return res3 or res4     
+    
+    return res1 or res2
 
 ##########
 # Tester #
