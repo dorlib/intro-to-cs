@@ -1,3 +1,4 @@
+
 # Skeleton file for HW4 - Spring 2022 - extended intro to CS
 
 # Add your implementation to this file
@@ -142,12 +143,38 @@ def can_create_twice(s, L):
 
 # 3c
 def valid_braces_placement(s, L):
-    last,L = ('',[str(i) for i in L]) if isinstance(L[0],int) else (L[0],L[1:])
-    return bool(sum([valid_braces_placement(s,[f"{last}{'(' + ''.join(L[:i+1])+')'}{''.join(L[i+1:min(j+2,L.index('*'))])}({''.join(L[j+2:L.index('*')])})".removesuffix('()')+'*']+L[L.index('*')+1:]) for i in range(0,L.index('*'),2) for j in range(i,L.index('*'),2)])) if '*' in L else s in [eval(last+'(' + ''.join(L[:i+1])+')'+''.join(L[i+1:])) for i in range(0,len(L),2)]
+    global res
+    res = []
+    return valid(s, L)
 
-    
-    
+def valid(s, L):
+    global res
+    remain = ''
 
+    if isinstance(L[0], int):
+        for i in range (len(L)):
+            L[i] = str(L[i])
+    else:
+        remain = L[0]
+        L = L[1:]
+
+        
+    if '*' in L:
+        index = L.index('*')
+        for i in range(0,index, 2):
+            for j in range(i,index, 2):
+                temp = [remain + '(' + ''.join(L[:i + 1]) + ')' + ''.join(L[i + 1 : min(j + 2, index)])+ (''.join(L[j + 2:index])) + '*'] + L[index + 1:]
+                result = valid(s, temp)
+                res.append(result)
+        return bool(sum(res))
+
+    else:
+        temp = []
+        for i in range(0, len(L), 2):
+            temp.append(eval(remain + '(' + ''.join(L[:i + 1]) + ')' + ''.join(L[i + 1:])))
+        return s in temp
+                            
+    
 ##############
 # Question 4 #
 ##############
