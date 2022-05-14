@@ -116,16 +116,45 @@ class FactoredInteger:
 
     # 2b
     def __repr__(self):
-        pass  # replace this with your code
+        factors_string = ""
+        for factor in self.factors:
+            factors_string += (str(factor) + "*")
+
+        factors_string = factors_string[:len(factors_string)-1]
+            
+        return "<" + str(self.number) + ":" + factors_string + ">"
 
     def __eq__(self, other):
-        pass  # replace this with your code
+        return self.number  == other.number
+                
 
     def __mul__(self, other):
-        pass  # replace this with your code
+        lst = []
+        i, j = 0,0
+
+        while i < len(self.factors) and j < len(other.factors):
+            if self.factors[i] < other.factors[j]:
+                lst.append(self.factors[i])
+                i += 1
+            else:
+                lst.append(other.factors[j])
+                j += 1
+
+        lst = lst + self.factors[i:] + other.factors[j:]
+
+        return FactoredInteger(lst)
 
     def __pow__(self, other):
-        pass  # replace this with your code
+        lst = []
+        i= 0
+        other_num = other.number
+        
+        while i < len(self.factors):
+            for k in range(other_num):
+                lst.append(self.factors[i])
+            i += 1
+
+        return FactoredInteger(lst)
 
     # 2c
     def gcd(self, other):
@@ -320,16 +349,29 @@ class Polygon:
     def edges(self):
         angles = []
         points = self.points_list
-        angles.append(calculate_angle(points[len(points)-1].value, points[0].value, points[1].value))
+        res =   calculate_angle(points[len(points)-1].value, points[0].value, points[1].value)
+        if res > 180:
+            res = 360 - res
+        angles.append(res)
         for i in range (1, len(points)-1):
-            angles.append(calculate_angle(points[i-1].value, points[i].value, points[i+1].value))
-        angles.append(calculate_angle(points[len(points)-2].value ,points[len(points)-1].value , points[0].value))
+            res = calculate_angle(points[i-1].value, points[i].value, points[i+1].value)
+            if points[i-1].value.x > points[i].value.x and points[i+1].value.x > points[i].value.x:
+                res = 360 - res
+            elif res > 180:
+                res = 360 - res
+            angles.append(res)
+        res = calculate_angle(points[len(points)-2].value ,points[len(points)-1].value , points[0].value)
+        if res > 180:
+            res = 360 - res
+        angles.append(res)
         return angles
 
 
     # 3b_iii
     def is_convex(self):
-        pass # replace this with your code
+        angels = self.edges
+        num_of_edges = len(angels)  
+            
 
 
 ##############
@@ -543,7 +585,7 @@ def test():
     if n1 != FactoredInteger([2, 3]):
         print("2b - error in __eq__")
     if n1 * n2 != n3:
-        print("2b - error in __mult__")
+        print("2b - error in __mul__")
     if n1 ** n2 != FactoredInteger([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]):
         print("2b - error in __pow__")
 
