@@ -158,7 +158,31 @@ class FactoredInteger:
 
     # 2c
     def gcd(self, other):
-        pass  # replace this with your code
+        dict_self = {}
+        dict_other = {}
+        
+        for factor in self.factors:
+            if factor not in dict_self:
+                dict_self[factor] = 1
+            else:
+                dict_self[factor] = dict_self[factor] + 1
+
+        for factor in other.factors:
+            if factor not in dict_other:
+                dict_other[factor] = 1
+            else:
+                dict_other[factor] = dict_other[factor] + 1
+        
+        gcd_factors = []
+
+        for key, value in dict_self.items():
+            if key in dict_other:
+                for i in range(min(value, dict_other[key])):
+                    gcd_factors.append(key)
+
+        return FactoredInteger(gcd_factors)      
+        
+            
 
     # 2d
     def lcm(self, others):
@@ -535,7 +559,15 @@ class Binary_search_tree():
 
 # 5a
 def prefix_suffix_overlap(lst, k):
-    pass  # replace this with your code
+    res = []
+    for i in range(len(lst)):
+        start = lst[i][:k]
+        for j in range(len(lst)):
+            if j != i:
+                if lst[j][-k:] == start:
+                    res.append((i,j))
+
+    return res      
 
 
 # 5c
@@ -558,13 +590,33 @@ class Dict:
 
     def find(self, key):
         """ returns ALL values of key as a list, empty list if none """
-        pass  # replace this with your code
+        res = []
+        for i in range(len(self.table)):
+            if self.table[i]!= []:
+                for j in range(len(self.table[i])):
+                    if self.table[i][j][0] == key:
+                        res.append(self.table[i][j][1])
 
+        return res
+            
 
 # 5d
 def prefix_suffix_overlap_hash1(lst, k):
-    pass  # replace this with your code
+    res = []
+    d = Dict(len(lst))
+    for i in range(len(lst)):
+        d.insert(lst[i][:k],i)
 
+    for i in range(len(lst)):
+        temp = d.find(lst[i][-k:])
+        for x in temp:
+            if i != x:
+                res.append((x,i))
+
+    return res
+        
+     
+            
 
 ##########
 # TESTER #
