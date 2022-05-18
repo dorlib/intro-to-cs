@@ -562,9 +562,17 @@ class Binary_search_tree():
             if not root.left and not root.right:
                 return True
             elif root.left and not root.right:
+                left_tree = Binary_search_tree()
+                left_tree.root = root.left
+                if len(left_tree.inorder()) > 1:
+                    return False
                 res_l = is_q_balanced_rec(root.left,q)
                 return res_l
             elif root.right and not root.left:
+                right_tree = Binary_search_tree()
+                right_tree.root = root.right
+                if len(right_tree.inorder()) > 1:
+                    return False
                 res_r = is_q_balanced_rec(root.right,q)
                 return res_r       
             elif root.right and root.left:
@@ -580,7 +588,7 @@ class Binary_search_tree():
                 right_res = is_q_balanced_rec(right_tree.root,q)
                 if left_res and right_res:
                     minimum = min((counter_l/(counter_l + counter_r)),(counter_r/(counter_l + counter_r)))
-                    if minimum >= q and minimum < 0.5:
+                    if minimum >= q :
                         return True
                     else:
                         return False
