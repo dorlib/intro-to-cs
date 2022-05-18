@@ -550,7 +550,48 @@ class Binary_search_tree():
 
     # 4
     def is_q_balanced(self, q):
-        pass  # replace this with your code
+        global total_n
+        total_n = len(Binary_search_tree.inorder(self))
+            
+        if self.root == None:
+            return (False,-1)
+                
+        def is_q_balanced_rec(root, q):
+            global total_n
+
+            if not root.left and not root.right:
+                return True
+            elif root.left and not root.right:
+                res_l = is_q_balanced_rec(root.left,q)
+                return res_l
+            elif root.right and not root.left:
+                res_r = is_q_balanced_rec(root.right,q)
+                return res_r       
+            elif root.right and root.left:
+                left_tree = Binary_search_tree()
+                left_tree.root = root.left
+                right_tree = Binary_search_tree()
+                right_tree.root = root.right
+
+                counter_l = len(left_tree.inorder())
+                counter_r = len(right_tree.inorder())
+                
+                left_res = is_q_balanced_rec(left_tree.root,q)
+                right_res = is_q_balanced_rec(right_tree.root,q)
+                if left_res and right_res:
+                    minimum = min((counter_l/(counter_l + counter_r)),(counter_r/(counter_l + counter_r)))
+                    if minimum >= q and minimum < 0.5:
+                        return True
+                    else:
+                        return False
+                else:
+                    return False
+
+        final = is_q_balanced_rec(self.root, q)
+        if final:
+            return(final,total_n)
+        else:
+            return(False,-1)
 
 
 ############
@@ -613,9 +654,7 @@ def prefix_suffix_overlap_hash1(lst, k):
             if i != x:
                 res.append((x,i))
 
-    return res
-        
-     
+    return res   
             
 
 ##########
