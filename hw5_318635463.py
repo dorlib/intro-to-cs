@@ -358,7 +358,7 @@ class Linked_list:
         self.len -= 1
 
 
-# for 3b_ii
+# for 3b_i
 def calculate_angle(p1, p2, p3):
     ang = math.degrees(math.atan2(p3.y - p2.y, p3.x - p2.x) - math.atan2(p1.y - p2.y, p1.x - p2.x))
     return ang + 360 if ang < 0 else ang
@@ -369,7 +369,7 @@ class Polygon:
         self.points_list = llist
         self.point_head = llist.head
 
-    # 3b_ii
+    # 3b_i
     def edges(self):
         angles = []
         points = self.points_list
@@ -379,9 +379,7 @@ class Polygon:
         angles.append(res)
         for i in range (1, len(points)-1):
             res = calculate_angle(points[i-1].value, points[i].value, points[i+1].value)
-            if points[i-1].value.x > points[i].value.x and points[i+1].value.x > points[i].value.x:
-                res = 360 - res
-            elif res > 180:
+            if res > 180:
                 res = 360 - res
             angles.append(res)
         res = calculate_angle(points[len(points)-2].value ,points[len(points)-1].value , points[0].value)
@@ -389,12 +387,7 @@ class Polygon:
             res = 360 - res
         angles.append(res)
         return angles
-
-
-    # 3b_iii
-    def is_convex(self):
-        angels = self.edges
-        num_of_edges = len(angels)  
+  
             
 
 
@@ -551,13 +544,17 @@ class Binary_search_tree():
     # 4
     def is_q_balanced(self, q):
         global total_n
-        total_n = len(Binary_search_tree.inorder(self))
+        global total_tree
+        
+        total_tree = Binary_search_tree.inorder(self)
+        total_n = len(total_tree)
             
         if self.root == None:
             return (False,-1)
                 
         def is_q_balanced_rec(root, q):
             global total_n
+            global total_tree
 
             if not root.left and not root.right:
                 return True
@@ -566,15 +563,15 @@ class Binary_search_tree():
                 left_tree.root = root.left
                 if len(left_tree.inorder()) > 1:
                     return False
-                res_l = is_q_balanced_rec(root.left,q)
-                return res_l
+                else:
+                    return True
             elif root.right and not root.left:
                 right_tree = Binary_search_tree()
                 right_tree.root = root.right
                 if len(right_tree.inorder()) > 1:
                     return False
-                res_r = is_q_balanced_rec(root.right,q)
-                return res_r       
+                else:
+                    return True  
             elif root.right and root.left:
                 left_tree = Binary_search_tree()
                 left_tree.root = root.left
@@ -656,6 +653,8 @@ def prefix_suffix_overlap_hash1(lst, k):
     for i in range(len(lst)):
         d.insert(lst[i][:k],i)
 
+    print(d)
+
     for i in range(len(lst)):
         temp = d.find(lst[i][-k:])
         for x in temp:
@@ -732,12 +731,6 @@ def test():
 
     not_convex = Polygon(Linked_list([Point(1, 1),Point(8, 1),Point(7, 2),Point(8, 4)]))
     yes_convex = Polygon(Linked_list([Point(1, 1),Point(8, 1),Point(9, 2),Point(8, 4)]))
-
-    if not_convex.is_convex() == True:
-        print("3b_ii - error in Polygon.is_convex")
-    if yes_convex.is_convex() == False:
-        print("3b_ii - error in Polygon.is_convex")
-
 
     ##############
     # QUESTION 4 #
