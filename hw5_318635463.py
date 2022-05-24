@@ -60,11 +60,20 @@ class LogarithmicLinkedList(LogarithmicLinkedList):
             if p.val == val:
                 return True
             k = 0
-            m = len(p.next_list)
-            while k < m and p.next_list[k] <= val:
-                k += 1
-            if k > 0:
-                p = p.next_list[k-1]
+            m = len(p.next_list)- 1
+            while k <= m and p.next_list[k].val <= val:
+                mid = ((k+m)//2)
+                if p.next_list[mid].val == val:
+                    return True                    
+                elif p.next_list[mid].val < val:
+                    if ((k+m)//2) == 0:
+                        k += 1
+                    else:
+                        k = mid + 1
+                else:
+                    m = mid - 1
+            if k >= 1:
+                p = p.next_list[k - 1]
         return False
 
 ##############
