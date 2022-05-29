@@ -9,12 +9,13 @@
 from PIL import Image  # need to install PIL/PILLOW
 import math
 
+
 # Q1b
 def sets_concat(s1, s2):
     s = set()
     for x in s1:
         for y in s2:
-            s.add(x+y)
+            s.add(x + y)
     return s
 
 
@@ -41,10 +42,14 @@ def generate_language_rec(rule_dict, var, k, mem):
     for var_rule in rule_dict[var]:
         if len(var_rule) == 2:
             X, Y = var_rule[0], var_rule[1]
-            # for j in range(1, k):
+            for j in range(1, k):
                 # Add your code here #
+                x = generate_language_rec(rule_dict, var, j, mem)
+                y = generate_language_rec(rule, dict, var, k - j, mem)
+                s.add(x + y)
     mem[(var, k)] = s
     return s
+
 
 # Q1c
 def what(rule_dict, start_var, k):
@@ -83,25 +88,37 @@ def what_rec(rule_dict, var, k, mem):
 def gen1():
     pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
 
+
 # Q2b
 def gen2(g):
-    pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
+    sum = 0
+    while True:
+        sum += next(g)
+        yield sum
+
 
 # Q2c
 def gen3(g):
-    pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
+    while True:
+        n = next(g)
+        if n > 0:
+            yield n
+
 
 # Q2d
 def gen4(rules_dict, start_var):
     pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
 
+
 # Q2e
 def gen5(g1, g2):
     pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
 
+
 # Q3b
 def repetition_threshold(W, L):
-    pass # replace this with your code
+    pass  # replace this with your code
+
 
 # Q3c
 
@@ -120,6 +137,7 @@ def maxmatch(T, p, W=2 ** 12 - 1, L=2 ** 5 - 1):
             m = offset
     return m, k
 
+
 # Modify this code #
 def LZW_compress_v2(text, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
     intermediate = []
@@ -134,6 +152,7 @@ def LZW_compress_v2(text, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
             intermediate.append([m, k])
             p += k
     return intermediate
+
 
 # Modify this code #
 def inter_to_bin_v2(intermediate, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
@@ -150,6 +169,7 @@ def inter_to_bin_v2(intermediate, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
             bits.append((bin(m)[2:]).zfill(W_width))
             bits.append((bin(k)[2:]).zfill(L_width))
     return "".join(ch for ch in bits)
+
 
 # Modify this code #
 def bin_to_inter(bits, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
@@ -173,6 +193,7 @@ def bin_to_inter(bits, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
             inter.append([m, k])
     return inter
 
+
 # This does not require any changes #
 def LZW_decompress(intermediate):
     text_lst = []
@@ -185,6 +206,7 @@ def LZW_decompress(intermediate):
                 text_lst.append(text_lst[-m])
     return "".join(text_lst)
 
+
 # Q5a
 def right_left(img):
     w, h = img.size
@@ -193,6 +215,9 @@ def right_left(img):
     new_mat = new_img.load()
 
     # Add your code here #
+    for x in range(w):
+        for y in range(h):
+            new_mat[x, y] = mat[-x, y]
 
     return new_img
 
@@ -205,8 +230,12 @@ def what2(img):
     new_mat = new_img.load()
 
     # Add your code here #
-
+    for x in range(w):
+        for y in range(h):
+            new_mat[x, y] = mat[0.5*x, y]
+            
     return new_img
+
 
 ############
 #  TESTER  #
@@ -219,17 +248,16 @@ def test():
         print("Error in Q1b - generate_language")
 
     # Q3b
-    if repetition_threshold(2**12-1, 2**5-1) != 3:
+    if repetition_threshold(2 ** 12 - 1, 2 ** 5 - 1) != 3:
         print("Error in Q3b - repetition_threshold")
 
     # Q3c
     c = {'a': '0', 'b': '10', 'c': '110', 'd': '1110', 'e': '1111'}
-    if LZW_compress_v2("abcdeabccde", c, 2**5-1, 2**3-1) != ['a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', [6, 3]] or \
-        LZW_compress_v2("ededaaaaa", c, 2**5-1, 2**3-1) != ['e', 'd', [2, 2], 'a', 'a', 'a', 'a', 'a']:
+    if LZW_compress_v2("abcdeabccde", c, 2 ** 5 - 1, 2 ** 3 - 1) != ['a', 'b', 'c', 'd', 'e', 'a', 'b', 'c', [6, 3]] or \
+            LZW_compress_v2("ededaaaaa", c, 2 ** 5 - 1, 2 ** 3 - 1) != ['e', 'd', [2, 2], 'a', 'a', 'a', 'a', 'a']:
         print("Error in Q3c - LZW_compress_v2")
-    if inter_to_bin_v2(['e', 'd', [2, 2]], c, 2**5-1, 2**3-1) != "0111101110100010010":
+    if inter_to_bin_v2(['e', 'd', [2, 2]], c, 2 ** 5 - 1, 2 ** 3 - 1) != "0111101110100010010":
         print("Error in Q3c - inter_to_bin_v2")
-    htree = ('a', ('b',('c',('d', 'e'))))  # This is the huffman tree corresponding to the c defined previously
-    if bin_to_inter("0111101110100010010", htree, 2**5-1, 2**3-1) != ['e', 'd', [2, 2]]:
+    htree = ('a', ('b', ('c', ('d', 'e'))))  # This is the huffman tree corresponding to the c defined previously
+    if bin_to_inter("0111101110100010010", htree, 2 ** 5 - 1, 2 ** 3 - 1) != ['e', 'd', [2, 2]]:
         print("Error in Q3c - bin_to_inter_v2")
-
