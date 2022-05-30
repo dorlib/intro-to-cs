@@ -230,10 +230,14 @@ def what2(img):
     new_mat = new_img.load()
 
     # Add your code here #
-    for x in range(w):
-        for y in range(h):
-            new_mat[x, y] = mat[0.5*x, y]
-            
+    for x in range(h):
+        lst = []
+        for i in range(w):
+            lst.append(mat[i,x])
+        lst.sort()
+        for i in range(len(lst)):
+            new_mat[i,x] = lst[i]
+
     return new_img
 
 
