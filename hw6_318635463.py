@@ -117,7 +117,12 @@ def gen5(g1, g2):
 
 # Q3b
 def repetition_threshold(W, L):
-    pass  # replace this with your code
+    x = math.ceil(math.log(W,2))
+    y = math.ceil(math.log(L,2))
+    total_for_rep = x + y + 1
+    k = total_for_rep // 8
+    return k + 1
+    
 
 
 # Q3c
@@ -145,7 +150,13 @@ def LZW_compress_v2(text, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
     p = 0
     while p < n:
         m, k = maxmatch(text, p, W, L)
-        if k <= 2:
+        x = math.ceil(math.log(W,2))
+        y = math.ceil(math.log(L,2))
+        total_for_rep = x + y + 1
+        total_for_huffman = 0
+        for i in range(k):
+            total_for_huffman += (1+int(len(c[text[p]])))
+        if total_for_rep >= total_for_huffman:
             intermediate.append(text[p])
             p += 1
         else:
