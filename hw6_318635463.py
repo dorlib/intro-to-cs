@@ -173,7 +173,7 @@ def inter_to_bin_v2(intermediate, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
     for elem in intermediate:
         if type(elem) == str:
             bits.append("0")
-            bits.append((bin(ord(elem))[2:]).zfill(7))
+            bits.append(c[elem])
         else:
             bits.append("1")
             m, k = elem
@@ -183,7 +183,7 @@ def inter_to_bin_v2(intermediate, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
 
 
 # Modify this code #
-def bin_to_inter(bits, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
+def bin_to_inter_v2(bits, htree, W=2 ** 12 - 1, L=2 ** 5 - 1):
     W_width = math.floor(math.log(W, 2)) + 1
     L_width = math.floor(math.log(L, 2)) + 1
     inter = []
@@ -191,10 +191,20 @@ def bin_to_inter(bits, c, W=2 ** 12 - 1, L=2 ** 5 - 1):
     p = 0
     while p < n:
         if bits[p] == "0":
-            p += 1
-            char = chr(int(bits[p:p + 7], 2))
-            inter.append(char)
-            p += 7
+            l = 1
+            chars = [int(bits[p+1])]
+            while True:
+                res = htree
+                for i in range(len(chars)):
+                    res = res[chars[i]]
+                if len(res) == 1:
+                    inter.append(res)
+                    p += l +1
+                    chars = []
+                    l = 1
+                    break
+                l += 1
+                chars.append(int(bits[p+l]))
         elif bits[p] == "1":
             p += 1
             m = int(bits[p:p + W_width], 2)
@@ -274,5 +284,5 @@ def test():
     if inter_to_bin_v2(['e', 'd', [2, 2]], c, 2 ** 5 - 1, 2 ** 3 - 1) != "0111101110100010010":
         print("Error in Q3c - inter_to_bin_v2")
     htree = ('a', ('b', ('c', ('d', 'e'))))  # This is the huffman tree corresponding to the c defined previously
-    if bin_to_inter("0111101110100010010", htree, 2 ** 5 - 1, 2 ** 3 - 1) != ['e', 'd', [2, 2]]:
+    if bin_to_inter_v2("0111101110100010010", htree, 2 ** 5 - 1, 2 ** 3 - 1) != ['e', 'd', [2, 2]]:
         print("Error in Q3c - bin_to_inter_v2")
