@@ -31,11 +31,15 @@ def generate_language_rec(rule_dict, var, k, mem):
     s = set()
     if k == 0:
         # Add your code here #
+        s.add("")
         mem[(var, k)] = s
         return s
 
     if k == 1:
         # Add your code here #
+        for x in rule_dict[var]:
+            if len(x) == 1:
+                s.update(x[0])
         mem[(var, k)] = s
         return s
 
@@ -44,9 +48,9 @@ def generate_language_rec(rule_dict, var, k, mem):
             X, Y = var_rule[0], var_rule[1]
             for j in range(1, k):
                 # Add your code here #
-                x = generate_language_rec(rule_dict, var, j, mem)
-                y = generate_language_rec(rule, dict, var, k - j, mem)
-                s.add(x + y)
+                x = generate_language_rec(rule_dict, X, j, mem)
+                y = generate_language_rec(rule_dict, Y, k - j, mem)
+                s.update(sets_concat(x,y))
     mem[(var, k)] = s
     return s
 
@@ -54,22 +58,27 @@ def generate_language_rec(rule_dict, var, k, mem):
 # Q1c
 def what(rule_dict, start_var, k):
     mem = dict()
-    return what_rec(rule_dict, start_var, k, mem)
+    x = what_rec(rule_dict, start_var, k, mem)
+    print("final mem", mem)
+    return x
 
 
 def what_rec(rule_dict, var, k, mem):
+    print("var = ",var,"k =", k)
     if (var, k) in mem:
         return mem[(var, k)]
 
     cnt = 0
     if k == 0:
         if "" in rule_dict[var]:
+            print("0", rule_dict[var] , var)
             cnt += 1
         mem[(var, k)] = cnt
         return cnt
 
     if k == 1:
         for x in rule_dict[var]:
+            print("k = 1,rule_dict[var]",rule_dict[var])
             if len(x) == 1:
                 cnt += 1
         mem[(var, k)] = cnt
@@ -78,6 +87,10 @@ def what_rec(rule_dict, var, k, mem):
     for var_rule in rule_dict[var]:
         if len(var_rule) == 2:
             X, Y = var_rule[0], var_rule[1]
+            print("var", var)
+            print("var_rule = ", var_rule)
+            print("X = ",X,"Y = ",Y)
+            print("mem",mem)
             for j in range(1, k):
                 cnt += what_rec(rule_dict, X, j, mem) * what_rec(rule_dict, Y, k - j, mem)
     mem[(var, k)] = cnt
@@ -86,7 +99,23 @@ def what_rec(rule_dict, var, k, mem):
 
 # Q2a
 def gen1():
-    pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
+    sum = 1
+    yield 0,0
+    while True:
+        for i in range(sum + 1):
+            yield i, sum - i
+            if i == 0:  
+                yield i, -(sum - i)
+                continue
+            if (sum - i) == 0:
+                yield -i, sum-i
+                continue
+            else:
+                yield -i, -(sum-i)
+                yield i, -(sum-i)
+                yield -i, sum-i
+                continue
+        sum += 1
 
 
 # Q2b
@@ -99,10 +128,8 @@ def gen2(g):
 
 # Q2c
 def gen3(g):
-    while True:
-        n = next(g)
-        if n > 0:
-            yield n
+    pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
+
 
 
 # Q2d
