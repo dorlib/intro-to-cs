@@ -1,3 +1,4 @@
+
 # Skeleton file for HW6 - Spring 2022 - extended intro to CS
 
 # Add your implementation to this file
@@ -58,27 +59,22 @@ def generate_language_rec(rule_dict, var, k, mem):
 # Q1c
 def what(rule_dict, start_var, k):
     mem = dict()
-    x = what_rec(rule_dict, start_var, k, mem)
-    print("final mem", mem)
-    return x
+    return what_rec(rule_dict, start_var, k, mem)
 
 
 def what_rec(rule_dict, var, k, mem):
-    print("var = ",var,"k =", k)
     if (var, k) in mem:
         return mem[(var, k)]
 
     cnt = 0
     if k == 0:
         if "" in rule_dict[var]:
-            print("0", rule_dict[var] , var)
             cnt += 1
         mem[(var, k)] = cnt
         return cnt
 
     if k == 1:
         for x in rule_dict[var]:
-            print("k = 1,rule_dict[var]",rule_dict[var])
             if len(x) == 1:
                 cnt += 1
         mem[(var, k)] = cnt
@@ -87,12 +83,9 @@ def what_rec(rule_dict, var, k, mem):
     for var_rule in rule_dict[var]:
         if len(var_rule) == 2:
             X, Y = var_rule[0], var_rule[1]
-            print("var", var)
-            print("var_rule = ", var_rule)
-            print("X = ",X,"Y = ",Y)
-            print("mem",mem)
             for j in range(1, k):
                 cnt += what_rec(rule_dict, X, j, mem) * what_rec(rule_dict, Y, k - j, mem)
+                
     mem[(var, k)] = cnt
     return cnt
 
@@ -134,7 +127,14 @@ def gen3(g):
 
 # Q2d
 def gen4(rules_dict, start_var):
-    pass  # replace this with your code (or don't, if there does not exist such generator with finite delay)
+    i = 2
+    s = set()
+    s.add("")
+    yield s
+    while True:
+        yield generate_language(rules_dict, start_var,i)
+        i += 1
+        
 
 
 # Q2e
