@@ -1,3 +1,3 @@
 # intro-to-cs
 
-That repo contain by homework of the course into to computer science at Tel Aviv University 🧑‍🎓
+That repo contains my homework's solutions from the course: into to computer science at Tel Aviv University 🧑‍🎓
